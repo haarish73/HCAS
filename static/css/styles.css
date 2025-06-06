@@ -1,0 +1,60 @@
+body {
+    background-color: #f5f8fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .container {
+    max-width: 960px;
+  }
+  
+  h1, h2, h3 {
+    color: #2c3e50;
+  }
+  
+  .navbar {
+    margin-bottom: 20px;
+  }
+  
+  .jumbotron {
+    background-color: #e9f7fc;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+  
+  .register-box, .login-box, .dashboard-box {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    margin-top: 40px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  
+  .btn-block {
+    width: 100%;
+  }
+  
+  .form-group label {
+    font-weight: 600;
+  }
+  
+  .table th, .table td {
+    vertical-align: middle;
+  }
+  
+  .badge {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+  
+  footer {
+    background-color: #f1f1f1;
+    padding: 15px 0;
+    margin-top: 50px;
+  }
+  

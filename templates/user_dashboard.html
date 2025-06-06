@@ -1,0 +1,565 @@
+{% extends 'base.html' %}
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block content %}
+<style>
+  :root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --accent-color: #f093fb;
+    --success-color: #4facfe;
+    --warning-color: #f093fb;
+    --danger-color: #fa709a;
+    --light-bg: #f8fafc;
+    --card-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    --hover-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  }
+
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .navbar {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95)) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border: none;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: white !important;
+  }
+
+  .main-container {
+    background: var(--light-bg);
+    min-height: calc(100vh - 76px);
+    padding: 2rem 0;
+  }
+
+  .profile-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .profile-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+  }
+
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+    border: 4px solid rgba(255,255,255,0.3);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+
+  .section-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .section-card:hover {
+    box-shadow: var(--hover-shadow);
+    transform: translateY(-5px);
+  }
+
+  .section-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .section-header:hover {
+    background: linear-gradient(135deg, #5a67d8, #6b46c1);
+  }
+
+  .section-header h3 {
+    margin: 0;
+    font-weight: 600;
+    flex-grow: 1;
+  }
+
+  .toggle-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .section-content {
+    padding: 2rem;
+    display: none;
+  }
+
+  .section-content.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      max-height: 0;
+    }
+    to {
+      opacity: 1;
+      max-height: 1000px;
+    }
+  }
+
+  .doctor-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+  }
+
+  .doctor-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border-color: var(--primary-color);
+  }
+
+  .form-control {
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  .btn-gradient {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: white;
+  }
+
+  .btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    color: white;
+  }
+
+  .status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .badge-pending {
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+    color: #2d3436;
+  }
+
+  .badge-accepted {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    color: white;
+  }
+
+  .badge-rejected {
+    background: linear-gradient(135deg, #e84393, #fd79a8);
+    color: white;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .table {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  }
+
+  .table thead th {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    font-weight: 600;
+  }
+
+  .table tbody tr {
+    transition: all 0.3s ease;
+  }
+
+  .table tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05);
+    transform: scale(1.01);
+  }
+
+  .profile-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .info-item {
+    background: rgba(102, 126, 234, 0.05);
+    padding: 1rem;
+    border-radius: 10px;
+    border-left: 4px solid var(--primary-color);
+  }
+
+  .info-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-value {
+    font-size: 1.1rem;
+    color: #2d3748;
+  }
+</style>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark mb-0">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <i class="fas fa-heartbeat me-2"></i>HealthCare System
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.email %}
+        <li class="nav-item">
+          <span class="nav-link">
+            <i class="fas fa-user me-1"></i>{{ user.email }}
+          </span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-light btn-sm ms-2" href="{{ url_for('logout') }}">
+            <i class="fas fa-sign-out-alt me-1"></i>Logout
+          </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link btn btn-outline-light btn-sm" href="{{ url_for('login') }}">
+            <i class="fas fa-sign-in-alt me-1"></i>Login
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="main-container">
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+          <div class="profile-avatar">
+            {{ user.name[0] if user.name else 'P' }}
+          </div>
+        </div>
+        <div class="col-md-9">
+          <h1 class="mb-2">Welcome, {{ user.name or 'Patient' }}!</h1>
+          <p class="mb-0 opacity-75">Manage your appointments and health records</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">{{ appointments|length }}</div>
+        <div class="text-muted">Total Appointments</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ doctors|length }}</div>
+        <div class="text-muted">Available Doctors</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">
+          {{ appointments|selectattr('status', 'equalto', 'accepted')|list|length }}
+        </div>
+        <div class="text-muted">Accepted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">
+          {{ appointments|selectattr('status', 'equalto', 'pending')|list|length }}
+        </div>
+        <div class="text-muted">Pending</div>
+      </div>
+    </div>
+
+    <!-- Patient Profile Section -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection('profile')">
+        <h3><i class="fas fa-user-circle me-2"></i>Your Profile</h3>
+        <span class="toggle-icon" id="profile-icon">+</span>
+      </div>
+      <div class="section-content" id="profile-content">
+        <div class="profile-info">
+          <div class="info-item">
+            <div class="info-label">Full Name</div>
+            <div class="info-value">{{ user.name or 'Not provided' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Email Address</div>
+            <div class="info-value">{{ user.email or 'Not provided' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Phone Number</div>
+            <div class="info-value">{{ user.phone or 'Not provided' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Date of Birth</div>
+            <div class="info-value">{{ user.dob or 'Not provided' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Address</div>
+            <div class="info-value">{{ user.address or 'Not provided' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Emergency Contact</div>
+            <div class="info-value">{{ user.emergency_contact or 'Not provided' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Blood Group</div>
+            <div class="info-value">{{ user.blood_group or 'Not provided' }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Medical History</div>
+            <div class="info-value">{{ user.medical_history or 'No history recorded' }}</div>
+          </div>
+        </div>
+       <a href="{{ url_for('update_profile') }}" class="btn btn-gradient">
+  <i class="fas fa-edit me-2"></i>Update Profile
+</a>
+      </div>
+    </div>
+
+    <!-- Available Doctors Section -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection('doctors')">
+        <h3><i class="fas fa-user-md me-2"></i>Available Doctors</h3>
+        <span class="toggle-icon" id="doctors-icon">+</span>
+      </div>
+      <div class="section-content" id="doctors-content">
+        <div class="row">
+          {% for doctor in doctors %}
+          <div class="col-lg-6 col-xl-4">
+            <div class="doctor-card">
+              <div class="d-flex align-items-center mb-3">
+                <div class="doctor-avatar me-3" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #4facfe, #00f2fe); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">
+                  {{ doctor.name[0] }}
+                </div>
+                <div>
+                  <h5 class="mb-1">Dr. {{ doctor.name }}</h5>
+                  <small class="text-muted">{{ doctor.specialty }}</small>
+                </div>
+              </div>
+              
+              <p class="mb-3"><strong>Qualification:</strong> {{ doctor.qualification }}</p>
+              
+              <form method="POST" action="{{ url_for('book_appointment', doctor_email=doctor.email) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" required>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label">Time</label>
+                    <input type="time" name="time" class="form-control" required>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Reason for Visit</label>
+                  <textarea name="reason" class="form-control" rows="3" placeholder="Describe your symptoms..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-gradient w-100">
+                  <i class="fas fa-calendar-plus me-2"></i>Book Appointment
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Appointment Status Section -->
+    <div class="section-card">
+      <div class="section-header" onclick="toggleSection('appointments')">
+        <h3><i class="fas fa-calendar-check me-2"></i>Appointment Status</h3>
+        <span class="toggle-icon" id="appointments-icon">+</span>
+      </div>
+      <div class="section-content" id="appointments-content">
+        {% if appointments %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th><i class="fas fa-user-md me-1"></i>Doctor</th>
+                <th><i class="fas fa-clipboard me-1"></i>Reason</th>
+                <th><i class="fas fa-calendar me-1"></i>Date</th>
+                <th><i class="fas fa-clock me-1"></i>Time</th>
+                <th><i class="fas fa-info-circle me-1"></i>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for appointment in appointments %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="me-2" style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #4facfe, #00f2fe); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; font-weight: bold;">
+                      {{ appointment.doctor_email[0] }}
+                    </div>
+                    {{ appointment.doctor_name }}
+                  </div>
+                </td>
+                <td>{{ appointment.reason }}</td>
+                <td>{{ appointment.date }}</td>
+                <td>{{ appointment.time }}</td>
+                <td>
+                  {% if appointment.status == 'pending' %}
+                    <span class="status-badge badge-pending">
+                      <i class="fas fa-clock me-1"></i>Pending
+                    </span>
+                  {% elif appointment.status == 'accepted' %}
+                    <span class="status-badge badge-accepted">
+                      <i class="fas fa-check me-1"></i>Accepted
+                    </span>
+                  {% else %}
+                    <span class="status-badge badge-rejected">
+                      <i class="fas fa-times me-1"></i>Rejected
+                    </span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+          <i class="fas fa-calendar-times text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+          <h4 class="text-muted mt-3">No Appointments Yet</h4>
+          <p class="text-muted">Book your first appointment with our available doctors!</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSection(sectionName) {
+  const content = document.getElementById(sectionName + '-content');
+  const icon = document.getElementById(sectionName + '-icon');
+  
+  if (content.classList.contains('show')) {
+    content.classList.remove('show');
+    icon.style.transform = 'rotate(0deg)';
+    icon.textContent = '+';
+  } else {
+    content.classList.add('show');
+    icon.style.transform = 'rotate(45deg)';
+    icon.textContent = '×';
+  }
+}
+
+// Auto-expand profile section on page load
+document.addEventListener('DOMContentLoaded', function() {
+  toggleSection('profile');
+});
+
+// Add smooth scrolling for better UX
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({
+      behavior: 'smooth'
+    });
+  });
+});
+</script>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

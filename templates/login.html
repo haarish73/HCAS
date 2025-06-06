@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="login-box">
+    <h2 class="text-center">Login</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+      <!-- {{ csrf_token() }} -->
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="role">Login As</label>
+        <select name="role" class="form-control" required>
+          <option value="">Select</option>
+          <option value="user">Patient</option>
+          <option value="doctor">Doctor</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success btn-block">Login</button>
+    </form>
+    <hr>
+    <p class="text-center">
+      Don't have an account? <a href="{{ url_for('register') }}">Register as Patient</a> or
+      <a href="{{ url_for('doctor_register') }}">Doctor</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

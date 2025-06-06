@@ -1,0 +1,91 @@
+<style>
+    /* Container */
+form {
+  max-width: 500px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Labels */
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Inputs and Textarea */
+form input[type="text"],
+form input[type="date"],
+form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+form input:focus,
+form textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background: #fff;
+}
+
+/* Textarea specific */
+form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Submit Button */
+form button[type="submit"] {
+  width: 100%;
+  background: #4a90e2;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+  background: #3b7acb;
+}
+
+</style>
+
+<form method="POST">
+  <label>Full Name</label>
+  <input type="text" name="name" value="{{ user.name or '' }}" required>
+
+  <label>Phone</label>
+  <input type="text" name="phone" value="{{ user.phone or '' }}">
+
+  <label>Date of Birth</label>
+  <input type="date" name="dob" value="{{ user.dob or '' }}">
+
+  <label>Address</label>
+  <input type="text" name="address" value="{{ user.address or '' }}">
+
+  <label>Emergency Contact</label>
+  <input type="text" name="emergency_contact" value="{{ user.emergency_contact or '' }}">
+
+  <label>Blood Group</label>
+  <input type="text" name="blood_group" value="{{ user.blood_group or '' }}">
+
+  <label>Medical History</label>
+  <textarea name="medical_history">{{ user.medical_history or '' }}</textarea>
+
+  <button type="submit">Update</button>
+</form>

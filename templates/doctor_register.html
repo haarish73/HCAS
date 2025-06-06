@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Register{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="register-box">
+    <h2 class="text-center">Register as a Doctor</h2>
+    <form method="POST" action="{{ url_for('doctor_register') }}">
+      <!-- {{ csrf_token() }} -->
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" name="name" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="specialty">Specialty</label>
+        <input type="text" name="specialty" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="qualification">Qualification</label>
+        <input type="text" name="qualification" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </form>
+    <hr>
+    <p class="text-center">Are you a patient? <a href="{{ url_for('register') }}">Register here</a></p>
+  </div>
+</div>
+{% endblock %}

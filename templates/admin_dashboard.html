@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .dashboard-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        <h1>Welcome, Admin!</h1>
+        <p>You are logged in as: <strong>{{ admin_email }}</strong></p>
+
+        <!-- Add more admin features below -->
+
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="#">Manage Users (coming soon)</a></li>
+            <li><a href="#">View Appointments (coming soon)</a></li>
+            <li><a href="#">System Settings (coming soon)</a></li>
+        </ul>
+    </div>
+</body>
+</html>

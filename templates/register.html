@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="register-box">
+    <h2 class="text-center">Register as a Patient</h2>
+   <form method="POST" action="{{ url_for('register') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <div class="form-group">
+    <label for="name">Full Name</label>
+    <input type="text" name="name" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" name="email" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" name="password" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="dob">Date of Birth</label>
+    <input type="date" name="dob" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="contact">Phone Number</label>
+    <input type="text" name="contact" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="gender">Gender</label>
+    <select name="gender" class="form-control" required>
+      <option value="">Select</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="address">Address</label>
+    <textarea name="address" class="form-control" required></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="emergency_contact">Emergency Contact</label>
+    <input type="text" name="emergency_contact" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="blood_group">Blood Group</label>
+    <input type="text" name="blood_group" class="form-control" required>
+  </div>
+
+  <div class="form-group">
+    <label for="history">Medical History</label>
+    <textarea name="history" class="form-control"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-block">Register</button>
+</form>
+
+    <hr>
+    <p class="text-center">Are you a doctor? <a href="{{ url_for('doctor_register') }}">Register here</a></p>
+  </div>
+
+  
+{% endblock %}
