@@ -12,6 +12,6 @@ MONGO_URI = 'mongodb://127.0.0.1:27017/healthcare_appointments'
 
 
 # one package install
-# pip install nodemailer
+# pip install nodemailer : for email authentication 
 
 # 
