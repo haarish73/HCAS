@@ -683,6 +683,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
 from datetime import datetime
 import logging
+import pprint
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -940,7 +942,7 @@ def doctor_login():
 # --- Admin related ---
 
 # Hardcoded admin credentials - replace with your own secure values
-PERSONAL_ADMIN_EMAIL = "muskan@123"
+PERSONAL_ADMIN_EMAIL = "muskan@gmail.com"
 PERSONAL_ADMIN_PASSWORD_HASH = "pbkdf2:sha256:260000$uDsQ2ksRVdczqZbo$51a0ba7fef0cf6cfe532eeed1df81fac62b8a53640825ebdd991d6b00cdd7aab"  # Hashed password string directly
 
 
@@ -971,7 +973,16 @@ def admin_login():
 def admin_dashboard():
     users = list(users_collection.find())
     appointments = list(appointments_collection.find())
+    pprint.pprint(users)
+    pprint.pprint(appointments)
     return render_template('admin_dashboard.html', users=users, appointments=appointments)
+
+
+@app.route('/logout')
+@login_required(role='admin')
+def admin_logout():
+    session.clear()
+    return render_template('admin_login.html', form=form)
 
 # --- End admin related ---
 

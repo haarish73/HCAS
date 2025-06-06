@@ -3,52 +3,258 @@
 <head>
     <meta charset="UTF-8" />
     <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'bounce-in': 'bounceIn 0.8s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-        .dashboard-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        h1 {
-            color: #333;
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
         }
-        .logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            float: right;
-            text-decoration: none;
+        .hover-lift {
+            transition: all 0.3s ease;
         }
-        .logout-btn:hover {
-            background-color: #c0392b;
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .status-pending {
+            background: linear-gradient(90deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        .status-confirmed {
+            background: linear-gradient(90deg, #a8edea 0%, #fed6e3 100%);
+        }
+        .role-admin {
+            background: linear-gradient(90deg, #d299c2 0%, #fef9d7 100%);
+        }
+        .role-doctor {
+            background: linear-gradient(90deg, #89f7fe 0%, #66a6ff 100%);
+        }
+        .role-patient {
+            background: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
         }
     </style>
 </head>
-<body>
-    <div class="dashboard-container">
-        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
-        <h1>Welcome, Admin!</h1>
-        <p>You are logged in as: <strong>{{ admin_email }}</strong></p>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="glass-effect rounded-3xl p-6 md:p-8 mb-8 animate-fade-in neon-glow">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center animate-bounce-in">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
+                        <p class="text-white/80 text-lg">
+                            Welcome back, <span class="font-semibold text-yellow-300">{{ session['email'] }}</span>
+                        </p>
+                    </div>
+                </div>
+                <a href="{{ url_for('logout') }}" class="group bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 hover:shadow-lg flex items-center space-x-2">
+                    <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
 
-        <!-- Add more admin features below -->
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="glass-effect rounded-2xl p-6 hover-lift animate-slide-up">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-white/70 text-sm font-medium uppercase tracking-wide">Total Users</p>
+                        <p class="text-3xl font-bold text-white mt-2">{{ users|length if users else 0 }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-effect rounded-2xl p-6 hover-lift animate-slide-up" style="animation-delay: 0.1s">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-white/70 text-sm font-medium uppercase tracking-wide">Total Appointments</p>
+                        <p class="text-3xl font-bold text-white mt-2">{{ appointments|length if appointments else 0 }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-r from-green-400 to-emerald-400 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <h2>Admin Panel</h2>
-        <ul>
-            <li><a href="#">Manage Users (coming soon)</a></li>
-            <li><a href="#">View Appointments (coming soon)</a></li>
-            <li><a href="#">System Settings (coming soon)</a></li>
-        </ul>
+        <!-- Users Section -->
+        <div class="glass-effect rounded-3xl p-6 md:p-8 mb-8 hover-lift animate-slide-up" style="animation-delay: 0.2s">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Users Management</h2>
+            </div>
+            
+            {% if users %}
+                <div class="overflow-hidden rounded-2xl border border-white/20">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-white/90 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-white/90 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-white/90 uppercase tracking-wider">Role</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/10">
+                                {% for user in users %}
+                                    <tr class="hover:bg-white/5 transition-colors duration-200">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-10 h-10 bg-gradient-to-r from-pink-400 to-red-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                                                    {{ (user.name[0] if user.name else user.email[0])|upper }}
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-white">{{ user.name if user.name else 'N/A' }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white/80">{{ user.email }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold text-gray-800 
+                                                {% if user.role == 'admin' %}role-admin
+                                                {% elif user.role == 'doctor' %}role-doctor
+                                                {% else %}role-patient{% endif %}">
+                                                {{ user.role|title }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <svg class="w-12 h-12 text-white/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
+                    <p class="text-white/70 text-lg">No users found</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="glass-effect rounded-3xl p-6 md:p-8 hover-lift animate-slide-up" style="animation-delay: 0.3s">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white">Appointments Overview</h2>
+            </div>
+            
+            {% if appointments %}
+                <div class="overflow-hidden rounded-2xl border border-white/20">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-white/10">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-white/90 uppercase tracking-wider">Doctor</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-white/90 uppercase tracking-wider">Patient</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-white/90 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-white/90 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/10">
+                                {% for appt in appointments %}
+                                    <tr class="hover:bg-white/5 transition-colors duration-200">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+                                                    {{ appt.doctor_email[0]|upper }}
+                                                </div>
+                                                <div class="ml-3 text-sm font-medium text-white">{{ appt.doctor_email }}</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+                                                    {{ appt.patient_email[0]|upper }}
+                                                </div>
+                                                <div class="ml-3 text-sm text-white/80">{{ appt.patient_email }}</div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-white/80">
+                                            {{ appt.date if appt.date else 'N/A' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-semibold text-gray-800
+                                                {% if appt.status == 'confirmed' %}status-confirmed
+                                                {% else %}status-pending{% endif %}">
+                                                {{ appt.status|title if appt.status else 'Pending' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-12">
+                    <svg class="w-12 h-12 text-white/50 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <p class="text-white/70 text-lg">No appointments found</p>
+                </div>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>
