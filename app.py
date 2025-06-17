@@ -942,8 +942,8 @@ def doctor_login():
 # --- Admin related ---
 
 # Hardcoded admin credentials - replace with your own secure values
-PERSONAL_ADMIN_EMAIL = "muskan@gmail.com"
-PERSONAL_ADMIN_PASSWORD_HASH = "pbkdf2:sha256:260000$uDsQ2ksRVdczqZbo$51a0ba7fef0cf6cfe532eeed1df81fac62b8a53640825ebdd991d6b00cdd7aab"  # Hashed password string directly
+PERSONAL_ADMIN_EMAIL = ""
+PERSONAL_ADMIN_PASSWORD_HASH = ""  # Hashed password string directly
 
 
 class AdminLoginForm(FlaskForm):
